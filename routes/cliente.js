@@ -1,10 +1,13 @@
 const {Router}= require("express");
 // const { removeAllListeners } = require("nodemon");
-const { criar, atualizar, remover } = require("../controllers/cliente");
+const { criar, atualizar, remover, buscar } = require("../controllers/cliente");
 const router = Router();
 
-router.get("/:id?", (req, res) => {
-    res.send("lista de clientes");
+router.get("/:id?", async (req, res) => {
+
+    const result = await buscar(req.params.id);
+
+    res.send(result)
 });
 
 router.post("/", async (req, res) => {

@@ -2,8 +2,9 @@ const { Router } = require("express");
 // const { removeAllListeners } = require("nodemon");
 const { criar, atualizar, remover, buscar } = require("../controllers/cliente");
 const router = Router();
+const verifyToken = require("../middlewares/auth");
 
-router.get("/:id?", async (req, res) => {
+router.get("/:id?", verifyToken, async (req, res) => {
     try {
         const result = await buscar(req.params.id);
         res.send(result)
@@ -30,7 +31,7 @@ router.put("/:id", async (req, res) => {
     }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", verifyToken, async (req, res) => {
     try {
         const result = await remover(req.params.id, req.body);
         res.send();

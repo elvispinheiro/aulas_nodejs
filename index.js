@@ -8,13 +8,19 @@ const produto = require("./routes/produto");
 const pedido = require("./routes/pedidos");
 const cep = require("./routes/cep");
 const connection = require("./models");
+const login = require("./routes/login");
+const verifyToken = require("./middlewares/auth");
 
 app.use(express.json());
+
+app.use("/cep", cep);
+app.use("/login", login);
+app.use("/cliente", cliente);
+app.use(verifyToken);
 app.use("/produto", produto);
 app.use("/tipoProduto", tipo_produto);
-app.use("/cliente", cliente);
 app.use("/pedido", pedido);
-app.use("/cep", cep);
+
 
 // definindo qual é a porta e colocando a aplicação para rodar:
 app.listen(3000, () => {

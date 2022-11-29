@@ -7,6 +7,7 @@ const options = {
     database: "ecommerce",
     host: "localhost",
     dialect: "postgres",
+    logging: false,
 };
 
 const connection = new Sequelize(options);

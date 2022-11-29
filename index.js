@@ -1,6 +1,7 @@
 // iniciar a aplicação:
 // const { Router } = require("express");
 const express = require("express");
+const morgan = require("morgan");
 const app = express();
 const cliente = require("./routes/cliente");
 const tipo_produto = require("./routes/tipo_produto")
@@ -12,6 +13,7 @@ const login = require("./routes/login");
 const verifyToken = require("./middlewares/auth");
 
 app.use(express.json());
+app.use(morgan("dev"));
 
 app.use("/cep", cep);
 app.use("/login", login);

@@ -1,5 +1,6 @@
 const { cliente } = require("../models");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 const { palavraChave } = require("../config/token.json");
 
 const criar = async ({ nome, email, senha, cpf }) => {
@@ -50,24 +51,20 @@ const remover = async (id) => {
 const buscar = async (id = null) => {
     const atributos = ["id", "nome", "email", "cpf"]
     if (id) {
-        return await cliente.findByPk(id, {
-            attributes: atributos,
-        });
+        return await cliente.findByPk(id);
     };
-    return await cliente.findAll({
-        attributes: atributos,
-    });
+    return await cliente.findAll({});
 };
 
 const login = async (email, senha) => {
     try {
-        const result = await cliente.findOne({
+        const result = await cliente.scope("login").findOne({
             where: {
                 email
             }
         });
-
-        if (!result || result.senha !== senha) {
+        const senhaValida = bcrypt.compare(senha, result.senha);
+        if (!senhaValida) {
             return false;
         }
         

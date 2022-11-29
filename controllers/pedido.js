@@ -74,7 +74,7 @@ const atualizar = async (id, { valorTotal = null, observacoes = null }, produtos
     }
 }
 
-const buscarPorId = async (id) => {
+const buscarPorId = async (id, clienteId) => {
     try {
         const options = {
             include: [
@@ -92,10 +92,18 @@ const buscarPorId = async (id) => {
                         }
                     ]
                 }
-            ]
+            ],
+            where: {
+                clienteId,
+            },
         };
+
+        if (id) {
+            options.where.id = id;
+        }
+        
         return id
-            ? await pedido.findByPk(id, options)
+            ? await pedido.findOne(options)
             : await pedido.findAll(options);
     } catch (error) {
         throw error;

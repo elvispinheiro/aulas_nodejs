@@ -12,6 +12,8 @@ const verifyToken = (req, res, next ) => {
             return res.status(401).send({mensagem: "token invalido"})
         }
 
+        req.clienteId = decoded.id;
+
         next();
 
     })

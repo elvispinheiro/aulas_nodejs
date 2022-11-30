@@ -1,18 +1,14 @@
 const { Router } = require("express");
-const { check, body, validationResult } = require("express-validator");
-// const { removeAllListeners } = require("nodemon");
+const { check, body, validationResult, checkSchema } = require("express-validator");
 const { criar, atualizar, remover, buscar } = require("../controllers/cliente");
 const router = Router();
 const verifyToken = require("../middlewares/auth");
+const validation = require("../middlewares/validation");
+const get = require("../schemas/cliente/get");
+const post = require("../schemas/cliente/post");
 
-router.get("/:id?", verifyToken, check('id').optional().isInt(), async (req, res) => {
+router.get("/:id?", verifyToken, checkSchema(get), validation, async (req, res) => {
     try {
-        const errors = validationResult(req);
-
-        if (!errors.isEmpty()) {
-            return res.status(400).send({ mensagem: "dados inválidos", erros: errors.array() });
-        }
-
         const result = await buscar(req.params.id);
         res.send(result)
     } catch (error) {
@@ -20,14 +16,8 @@ router.get("/:id?", verifyToken, check('id').optional().isInt(), async (req, res
     }
 });
 
-router.post("/", body('email').isEmail().not().isEmpty().normalizeEmail(), body('senha').isLength({ min: 5 }),
-check("nome").not().isEmpty().trim(), async (req, res) => {
+router.post("/", checkSchema(post), validation, async (req, res) => {
     try {
-        const errors = validationResult(req);
-
-        if (!errors.isEmpty()) {
-            return res.status(400).send({mensagem: "Dados inválidos", erros: errors.array() });
-        }
 
         const result = await criar(req.body);
         res.send(result);

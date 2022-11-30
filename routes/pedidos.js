@@ -1,14 +1,18 @@
 const { Router } = require("express");
+const { check, body, validationResult, checkSchema } = require("express-validator");
 const { connection } = require("../models");
 const { criar, buscarPorId, remover, atualizar } = require("../controllers/pedido");
+const validation = require("../middlewares/validation");
+const get = require("../schemas/pedido/get");
+const post = require("../schemas/pedido/post");
+const verifyToken = require("../middlewares/auth");
+
 
 const router = Router();
 
-router.get("/:id?", async (req, res) => {
+router.get("/:id?", verifyToken, checkSchema(get), validation, async (req, res) => {
     try {
-        const { clienteId } = req;
-
-        const result = await buscarPorId(req.params.id, clienteId);
+        const result = await buscarPorId(req.params.id, req.clienteId);
         res.send(result);
 
     } catch (error) {
@@ -16,7 +20,7 @@ router.get("/:id?", async (req, res) => {
     }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", checkSchema(post), validation, verifyToken, async (req, res) => {
     try {
         const pedidoCriado = await criar(req.body, req.body.produtos, req.body.enderecoEntrega);
         
